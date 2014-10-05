@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}먹자!{% endblock %}
+
+{% block head_style %}
+  body {
+    background-image: url('https://s3-ap-northeast-1.amazonaws.com/mukga/action_bg.png');
+    background-repeat: repeat;
+  }
+{% endblock %}
+
+{% block splash_body %}
+    <h1>최근에 먹은 식사를 선택해주세요.</h1> <a href="#" id="changeType">메뉴로 추천받기</a>
+
+    <div id="big_contianer">
+    {% for menu in big %}
+    <p style="margin-right: 25px; float: left;">
+        <a href="#" class="pure-button pure-button-primary">{{ menu }}</a>
+    </p>
+    {% endfor %}
+    <p style="margin-right: 25px; float: left;">
+        <a href="#" class="pure-button pure-button-success">선택 완료!</a>
+    </p>
+    </div>
+
+    <div id="small_container" style="display: none;">
+    {% for menu in small %}
+    <p style="margin-right: 25px; float: left;">
+        <a href="#" class="pure-button pure-button-primary">{{ menu }}</a>
+    </p>
+    {% endfor %}
+    <p style="margin-right: 25px; float: left;">
+        <a href="#" class="pure-button pure-button-success">선택 완료!</a>
+    </p>
+    </div>
+
+    <form action="/result" method="post">
+        <input type="hidden" name="type" value="big">
+        <input type="hidden" name="data">
+    </form>
+{% endblock %}
+
+{% block script %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+    Array.prototype.remove = function() {
+        var what, a = arguments, L = a.length, ax;
+        while (L && this.length) {
+            what = a[--L];
+            while ((ax = this.indexOf(what)) !== -1) {
+                this.splice(ax, 1);
+            }
+        }
+        return this;
+    };
+    $(document).ready(function() {
+       var current_type = 'big';
+        var big_menus = [];
+        var small_menus = [];
+
+       $('#changeType').on('click', function() {
+            if(current_type == 'big') {
+                $('#big_contianer').hide();
+                $('#small_container').show();
+                $(this).html('분류로 추천받기');
+                current_type = 'small';
+            } else {
+                $('#small_container').hide();
+                $('#big_contianer').show();
+                $(this).html('메뉴로 추천받기');
+                current_type = 'big';
+            }
+            $('form input').eq(0).val(current_type);
+       });
+
+       $('.pure-button:not(.pure-button-success)').on('click', function() {
+           var $this = $(this);
+           var value = $this.html();
+
+           if ($this.hasClass('pure-button-primary')) {
+                if (current_type == 'big') {
+                    big_menus.push(value);
+                } else {
+                    small_menus.push(value);
+                }
+                $this.removeClass('pure-button-primary');
+           } else {
+                if (current_type == 'big') {
+                    big_menus.remove(value);
+                } else {
+                    small_menus.remove(value);
+                }
+                $this.addClass('pure-button-primary');
+           }
+       });
+
+      $('.pure-button-success').on('click', function() {
+          if (current_type == 'big') {
+            if (big_menus.length == 0) {
+                alert('하나 이상 선택해주세요.')
+            } else {
+                $('form input').eq(1).val(big_menus.toString());
+                $('form').submit();
+            }
+          } else {
+            if (small_menus.length == 0) {
+                alert('하나 이상 선택해주세요.')
+            } else {
+                $('form input').eq(1).val(small_menus.toString());
+                $('form').submit();
+            }
+          }
+      });
+    });
+</script>
+{% endblock %}

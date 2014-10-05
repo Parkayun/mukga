@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}먹자!{% endblock %}
+
+{% block splash_body %}
+    <h1>이것들은 어떠신가요?</h1>
+    {% for menu in result %}
+    <h3>{{ menu }}</h3>
+    {% endfor %}
+{% endblock %}

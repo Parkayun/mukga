@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}먹자!{% endblock %}
+
+{% block head_style %}
+  #bg {
+    min-height: 100%;
+    min-width: 1024px;
+
+    width: 100%;
+    height: auto;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  @media screen and (max-width: 1024px) {
+    #bg {
+        left: 50%;
+        margin-left: -512px;
+    }
+  }
+{% endblock %}
+
+{% block top_body %}
+    <img src="https://s3-ap-northeast-1.amazonaws.com/mukga/intro_bg.png" id="bg">
+{% endblock %}
+
+{% block splash_body %}
+    <h1 class="splash-head">밥은 먹고 다니냐?</h1>
+    <p class="splash-subhead">
+        뭐..뭐먹지
+    </p>
+    <p>
+        <a href="/" class="pure-button pure-button-primary">바로 추천받기</a>
+    </p>
+{% endblock %}
